@@ -42,7 +42,8 @@ $targetProjects | %{
     #get the scm settings for the project
     if($repoId){
         $scmSettings = &"support/rest/cxone/getProjectSCMsettings.ps1" $cx1Session $repoId    
-        $scmSettings.containerScannerEnabled = $true
+        $scmSettings.webhookEnabled = $true
+        $scmSettings.prDecorationEnabled = $true
 
         #update the scm settings
         $scmSettingsBody = $scmSettings | ConvertTo-Json -Depth 10

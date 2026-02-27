@@ -4,12 +4,12 @@ param(
 )
 
 ####CxOne Variable######
-$cx1Tenant=""
-$PAT=""
-$cx1URL="https://ast.checkmarx.net/api"
-$cx1TokenURL="https://iam.checkmarx.net/auth/realms/$cx1Tenant"
-$cx1IamURL="https://iam.checkmarx.net/auth/admin/realms/$cx1Tenant"
-$csv_path=""
+$cx1Tenant="ma-isr-aquisitions"
+$PAT="eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI0ZTYzMTMyYy05NTE2LTRmYmUtOWQwYS02MmE3YzBjZjliNGMifQ.eyJpYXQiOjE3NDk0NzAyODUsImp0aSI6Ijk4MWQ5Y2YzLWZiYWQtNDc3YS05MWQ1LTJiNjBlNmJjYzIxOSIsImlzcyI6Imh0dHBzOi8vbWEtaXNyLWFxdWlzaXRpb25zLmN4b25lLmNsb3VkL2F1dGgvcmVhbG1zL21hLWlzci1hcXVpc2l0aW9ucyIsImF1ZCI6Imh0dHBzOi8vbWEtaXNyLWFxdWlzaXRpb25zLmN4b25lLmNsb3VkL2F1dGgvcmVhbG1zL21hLWlzci1hcXVpc2l0aW9ucyIsInN1YiI6IjA3NWQ5ZDQ2LWM2M2QtNDViZC1iYTIwLWE3ODBiM2I5MmRlNSIsInR5cCI6Ik9mZmxpbmUiLCJhenAiOiJhc3QtYXBwIiwic2lkIjoiMzcwODk4ZjktZmJhNC00NjQ0LTllNzMtNTMzNjIzYTRhNTQ0Iiwic2NvcGUiOiJyb2xlcyBpYW0tYXBpIGVtYWlsIHByb2ZpbGUgYXN0LWFwaSBvZmZsaW5lX2FjY2VzcyJ9.xi0drZV7ODd9plF-bvi0EbO2j5CTKR9x8M2T_4vr91Xg-HDOI5-G7uS5UxEn2qgOtBe_rLDEw1KJl1yKXf07Jw"
+$cx1URL="https://ma-isr-aquisitions.cxone.cloud/api"
+$cx1TokenURL="https://ma-isr-aquisitions.cxone.cloud/auth/realms/$cx1Tenant"
+$cx1IamURL="https://ma-isr-aquisitions.cxone.cloud/auth/admin/realms/$cx1Tenant"
+$csv_path="SAST_CX1_Map.csv"
 
 . "support/debug.ps1"
 
@@ -25,7 +25,7 @@ $cx1ProjectsResponse = &"support/rest/cxone/getprojects.ps1" $cx1Session
 $cx1Projects = $cx1ProjectsResponse.projects
 
 #Get list of CxOne groups
-$cx1Groups = &"support/rest/cxone/getgroups.ps1" $cx1Session
+# $cx1Groups = &"support/rest/cxone/getgroups.ps1" $cx1Session
 
 $validationLine = 0
 Import-Csv $csv_path | ForEach-Object {
@@ -36,9 +36,9 @@ Import-Csv $csv_path | ForEach-Object {
     }
     
     $projectName = $_.Cx1_ProjectName
-    $groupName = $_.Cx1_Groups
+    # $groupName = $_.Cx1_Groups
     $repoBranch = $_.SAST_ProjectGitBranch.replace("/refs/heads/","")
-    $groupInfo = $cx1Groups | Where-Object {$_.name -eq $groupName}
+    # $groupInfo = $cx1Groups | Where-Object {$_.name -eq $groupName}
 
     $projectData = $cx1Projects | Where-Object {$_.name -eq $projectName}
 
@@ -47,7 +47,7 @@ Import-Csv $csv_path | ForEach-Object {
     #update project groups and primary branch
     $projectDetails = @{
         name = $projectName
-        groups = @($groupInfo.id)
+        groups = ""
         mainBranch = $repoBranch
     }
 
